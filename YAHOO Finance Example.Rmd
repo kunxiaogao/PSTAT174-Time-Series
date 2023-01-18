@@ -1,0 +1,357 @@
+---
+title: "Yahoo Finance Examples"
+author: "Prof. Gareth W. Peters"
+date: "2023-01-08"
+output:
+  slidy_presentation: default
+  powerpoint_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Yahoo Finance - useful source of Data
+
+www.finance.yahoo.com
+
+- Go to the search menu and look up your favourite stock ticker
+
+Where do I find out the stock ticker symbol?
+
+Many places to look, for instance:
+
+- https://stockanalysis.com/stocks/
+
+- https://www.tradingview.com/screener/
+
+## Yahoo Finance - useful source of Data
+
+Lets take Apple AAPL
+
+- Go to search  
+
+- enter AAPL hit return
+
+- Get to Summary page 
+
+- select menu Chart
+
+- https://yhoo.it/3Qmrkax
+
+## Yahoo Finance - useful source of Data
+
+You can also get data for this asset by going to menu historical data:
+
+- https://finance.yahoo.com/quote/AAPL/history?p=AAPL
+
+Then you can download this data to a csv file.
+
+## Package Install and Call Libraries for R to use
+
+With the csv file you can read it into R
+
+- But first you need to set up packages (install & call)
+
+Comment: Keep all your libraries etc in one convenient place 
+
+- install them first
+
+Examples of packages I often use and so install
+
+Consider to install Rtools.
+
+https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html
+
+- install.packages('tidyverse')
+
+- install.packages('readr')
+
+- install.packages('knitr')
+
+- install.packages('zoo')
+
+- install.packages('dplyr')
+
+- install.packages('lubridate')
+
+- install.packages('Rtools')
+
+- install.packages('fpp2', dependencies = TRUE)
+
+- install.packages("tsibble")
+
+or 
+
+- remotes::install_github("tidyverts/tsibble")
+ 
+OR install the development version from github repo
+
+- install.packages("remotes")
+
+- remotes::install_github("robjhyndman/fpp2-package")
+
+https://cran.r-project.org/web/packages/seasonal/seasonal.pdf
+
+- install.packages("seasonal")  
+
+- install.packages("seasonal", type = "source") 
+
+- install.packages("seasonalview")
+
+- install.packages('xts')
+
+
+Comment on Library vs Require
+
+The library() by default returns an error if the requested package does not exist.
+ 
+example:
+
+library(xyz)
+
+Error in library(xyz) : there is no package called ‘xyz’
+ 
+The require() is designed to be used inside functions as it gives a warning message and returns a logical value say, FALSE if the requested package is not found and TRUE if the package is loaded.
+ 
+example:
+
+require(xyz)
+
+Loading required package: xyz
+
+Warning message:
+
+In library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE,) :
+
+there is no package called ‘xyz’
+ 
+It is better to use the library() as it gives the error message if the package is not found during the package loading time. 
+
+This will indeed avoid unnecessary headaches of tracking down the errors caused while attempting to use the library routines which are not installed.
+
+So now we can set up our libraries for R using commands
+
+- library(tidyverse)
+
+- library(tidyverse)
+
+- library(Rtools)
+
+- library(tidyverse)
+
+- library(readr)
+
+- library(knitr)
+
+- library(zoo)
+
+- library(dplyr)
+
+- library(lubridate)
+
+- library(fpp2)
+
+- library(tsibble)
+
+- library(seasonal)
+
+- library(seasonalview)
+
+- library(xts)
+
+## Setup the working directory
+
+Method 1: using files tab in RStudio 
+
+- set working directory manually via navigating to directory
+
+- select cog icon menu and select set as working directory
+
+Method 2: do in code / command line directly
+
+Get and print current working directory.
+
+- print(getwd())
+
+paste the command output into your setwd function as below
+
+- setwd("C:/Users/Gareth W. Peters/Documents/R/PSTAT174_274")
+
+or using syntax with a double forward slash \\ \\
+
+- setwd("C:\\ \\Users\\ \\Gareth W. Peters\\ \\Documents\\ \\R\\ \\PSTAT174_274")
+
+Get and print current working directory.
+
+- print(getwd())
+
+what files are in this directory?
+
+- list.files()
+
+
+## Read and Plot Data from CSV
+
+The tidyverse environment is what is recommened for best coding practice in modern R environments.
+
+- tidyverse uses tibble structures (see notes)
+
+tidyverse has a time series tibble structure:
+
+https://tsibble.tidyverts.org/
+
+https://cran.r-project.org/web/packages/tsibble/index.html
+
+
+- Reading in csv (comma separated data) in R using readr package
+
+```{r Read and Write, echo=TRUE}
+
+AAPL_Daily <- readr::read_csv("AAPL.csv",show_col_types = FALSE)
+
+print(AAPL_Daily)
+
+# or
+
+AAPL_Daily2 <- read.csv("AAPL.csv")
+
+print(AAPL_Daily2)
+
+```
+
+Are they the same type?
+
+```{r Read and Write2, echo=TRUE}
+
+class(AAPL_Daily)
+
+class(AAPL_Daily2)
+
+```
+
+What does the data structure contain? 
+
+- summary() or head() can help
+
+summarise the data first few lines
+
+```{r Read and Write3, echo=TRUE}
+
+head(AAPL_Daily)
+
+summary(AAPL_Daily)
+
+```
+
+What if there is more than one field - how to access one 
+
+We can also see one field if we label each column with a header.
+
+```{r Read and Write4, echo=TRUE}
+
+AAPL_Daily$Date
+
+AAPL_Daily$Open
+
+```
+
+Can make a certain date format in Date String 
+
+- note here this data already has a nice date format so this call wont do much
+
+```{r Read and Write5, echo=TRUE}
+
+AAPL_Daily$Date <- as.Date(AAPL_Daily$Date)
+
+```
+
+Lets check if it worked by printing say the first 10 rows fo the table.
+
+```{r Read and Write6, echo=TRUE}
+
+AAPL_Daily$Date[1:10]
+
+```
+
+I only want to keep the first date column and the open values 
+
+- it was presented as OHLC - Open, High, Low, Close etc
+
+now lets export the data for the first two columns of the data
+
+- Column 1 - date converted times
+
+- Column 2 - open value
+
+```{r Read and Write7, echo=TRUE}
+
+write.csv(data.frame(AAPL_Daily$Date,AAPL_Daily$Open), "AAPL_Daily_Open.csv", row.names=FALSE)
+
+```
+
+How can I turn the data into a format tibble?
+
+Lets now create the tibble with this data:
+
+```{r Read and Write8, echo=TRUE}
+  
+AAPL_Daily_Open <- readr::read_csv("AAPL_Daily_Open.csv")
+
+# Lets check the structure
+
+AAPL_Daily_Open[1,]
+AAPL_Daily_Open[1,1]
+AAPL_Daily_Open[1,2]
+
+```
+
+
+Lets see if can also turn this data into a ts object?
+
+```{r Read and Write9, echo=TRUE}
+
+AAPL_Daily_Open_ts <- ts(AAPL_Daily_Open$AAPL_Daily.Open, start = c(2022,1), frequency = 365)
+
+```
+
+Lets see if this worked
+
+```{r Read and Write10, echo=TRUE}
+
+AAPL_Daily_Open_ts
+
+```
+
+Always helps to start with simple data visualisation
+
+Now lets plot the data
+
+```{r Read and Write11, echo=TRUE}
+
+plot(AAPL_Daily_Open_ts, main="AAPL Daily Open Share Price", xlab="Date", ylab="Share Price USD", sub="Stock Time Series", col.main='red', col.lab='blue', col.sub='black',font.main=4, font.lab=4, font.sub=4)
+
+```
+
+Note that, the R par() function can be used to change the color, font style and size for the graph titles. The modifications done by the par() function are called ‘permanent modification’ because they are applied to all the plots generated under the current R session.
+
+Read more on par() by clicking here.
+
+```{r Read and Write12, echo=TRUE}
+
+par(
+  # Change the colors
+  col.main="red", col.lab="blue", col.sub="black",
+  # Titles in italic and bold
+  font.main=4, font.lab=4, font.sub=4,
+  # Change font size
+  cex.main=2, cex.lab=1.7, cex.sub=1.2
+  )
+
+plot(AAPL_Daily_Open_ts, main="AAPL Daily Open Share Price",
+        xlab="Date",
+        ylab="Share Price USD",
+        sub="Stock Price Time series")
+
+
+```

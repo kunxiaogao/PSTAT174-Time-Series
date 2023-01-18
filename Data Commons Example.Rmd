@@ -1,0 +1,111 @@
+---
+title: "Data Commons Data Sets"
+author: "Prof. Gareth W. Peters"
+date: "2023-01-08"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(dplyr)
+
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+## Data Commons Data
+
+The Data Commons Data website is a rich source of time series data
+
+- https://datacommons.org/
+
+The Data Commons knowledge graph is huge – there are over 240B data points for over 120K statistical variables. 
+
+Sometimes, you may want to export just some of this data and use it in a custom tool. 
+
+They make that easy to do with the new data download tool. 
+
+The new tool gives you the data in a csv file, does not require any coding experience to use, and allows you to select the statistical variables, places, and dates that you are interested in.
+
+Maybe you want to explore the population of all the countries in the world:
+
+- https://datacommons.org/tools/download#pt=Country&place=Earth&sv=Count_Person&dtType=LATEST&facets=%7B%7D 
+
+Can see that this allows you to select a date period (I selected ALL Available Dates) then downloaded a csv file: Earth_Country.csv
+
+Or you want to analyze poverty levels during COVID-19 
+
+- https://datacommons.org/tools/download#pt=State&place=country%2FUSA&sv=Count_Person_BelowPovertyLevelInThePast12Months__CumulativeCount_MedicalConditionIncident_COVID_19_ConfirmedOrProbableCase&dtType=RANGE&facets=%7B%7D&dtMin=2020&dtMax=2021 
+
+Or you’re interested in projected temperature differences and activities that can be affected by temperature rise 
+
+- https://datacommons.org/tools/download#pt=County&place=country%2FUSA&sv=DifferenceRelativeToBaseDate2006_Max_Temperature_RCP45__Percent_Person_WithCoronaryHeartDisease__WithdrawalRate_Water__Area_Farm_IrrigatedLand&dtType=LATEST&facets=%7B%7D
+
+The Data Download tool gives you the power to use the data in our knowledge graph to explore all of this and much more in your tool of choice.
+
+
+![Image of Data Commons Home Page](Home - Data Commons.pdf){width=75%, height=1000}
+
+They have a fantastic data download tool:
+
+- https://datacommons.org/tools/download
+
+Example of fertility data:
+
+- https://datacommons.org/browser/country/USA
+
+It also allows you to see a table format or a time series plot (chart)
+
+https://docs.datacommons.org/2022/09/14/download-tool.html
+
+
+## Read in the Data from Data commons CSV
+
+```{r Earth Population, echo = TRUE}
+
+
+Earth_Population_Yearly <- readr::read_csv("Earth_Country.csv",show_col_types = FALSE)
+
+head(Earth_Population_Yearly)
+
+```
+
+What countries are included 
+
+- We can use the unique() function on the field placeName
+
+```{r Earth Population 2, echo = TRUE}
+
+unique(Earth_Population_Yearly$placeName)
+
+```
+
+Lets select all the data for a given country say United States of America
+
+```{r Earth Population 3, echo = TRUE}
+
+USA_Population_Yearly_df <- as.data.frame(Earth_Population_Yearly) %>% select(c('placeName','Date:Count_Person','Value:Count_Person')) %>% filter(placeName == 'United States of America')
+
+
+```
+
+We can then make a summary of this data
+
+```{r Earth Population 4, echo = TRUE}
+
+summary(USA_Population_Yearly_df)
+
+```
+
+
+We can plot the change in the population Year over Year for the USA as follows 
+
+- Time Series Plot
+
+```{r Earth Population 5, echo = TRUE}
+
+plot(diff(USA_Population_Yearly_df$`Value:Count_Person`))
+
+
+```
+
