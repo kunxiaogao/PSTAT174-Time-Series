@@ -1,0 +1,33 @@
+---
+title: "HW Sheet 1 WK1& 2"
+author: "Kunxiao Gao"
+date: "2023-01-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidyverse)
+library(tidyverse)
+library(readr)
+library(knitr)
+library(zoo)
+library(dplyr)
+library(lubridate)
+library(fpp2)
+library(tsibble)
+library(seasonal)
+library(seasonalview)
+library(xts)
+```
+
+```{r}
+## read in the data provided in TVC DXY, 1M.csv which contains time (ISO format), Open, High, Low, Close
+TVC_DXY <- readr::read_csv("TVC_DXY, 1M.csv",show_col_types = FALSE)
+head(TVC_DXY)
+
+## convert the time to format yyyy-mm-dd T hh:mm:ss format
+
+```
+
