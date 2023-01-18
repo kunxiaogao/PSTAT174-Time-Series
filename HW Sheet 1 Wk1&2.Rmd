@@ -29,5 +29,12 @@ head(TVC_DXY)
 
 ## convert the time to format yyyy-mm-dd T hh:mm:ss format
 
+## create a ts object and tibble (explore data structures
+TVC_DXY_Open_ts <- ts(TVC_DXY$open, start = c(1967,1), frequency = 365)
+TVC_DXY_Open_ts
+```
+
+```{r}
+
 ```
 
